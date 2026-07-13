@@ -10,6 +10,8 @@ I would like to re-do it in a better way, with your help.
 
 I have created a repository for this work at <https://github.com/Eumaeus/Parallelia>. In that repository, I will keep copies of our conversations in the directory `ai_queries` so we will always have the context.
 
+What follows is a big overview of my ideas for this app. At the end, I will suggest a concrete first step for us to work on.
+
 ### Key Features
 
 I made the earlier project having seen other "translation-alignment" projects and having decided that this is a valuable exercise for students, with the potential to produce a valuable dataset. All other projects had some limitations. I wanted to rectify those in the following ways:
@@ -20,6 +22,7 @@ I made the earlier project having seen other "translation-alignment" projects an
 - The work of alignment should be serialized into a plain-text format.
 - The work of alignment should be able to proceed piecemeal, treating pieces of a text here and there.
 - The results of alignment-work should never, ever, lose their connection to the coplete texts, even of only a small section of a text has been aligned.
+- Rigorous separation of concerns. Alignments exist entirely as "stand-off markup", indexes to the texts. While we might serialize a library of texts with a collection of alignment-objects, CEX lets us keep them discrete.
 - There should not have to be an elaborate database back-end.
 
 ### Aligment of *Tokens*
@@ -50,17 +53,50 @@ So henceforth, when I say "token", I may mean "syllable" or "word" or "poetic li
 
 ### UI Overview
 
-I was happy with the overall UI and CSS in the original version: <https://raw.githubusercontent.com/Eumaeus/ducat/refs/heads/master/downloads/reader-1.1.0.html>.
+I was  pretty happy with the overall UI and CSS in the original version: <https://raw.githubusercontent.com/Eumaeus/ducat/refs/heads/master/downloads/reader-1.1.0.html>.
 
 The Javascript was compiled from ScalaJS, from code here: <https://github.com/Eumaeus/ducat/tree/master/src>.
 
+While I was happy with how the old version looked, I am assuming we will do better this time!
+
 #### Loading Texts
 
-- Local CEX-files.
-- CEX files on Github. A default library address.
-- Add texts by CTS-URN.
-- Pre-defined "text-sets": `.tsv` files with alignment-sets of `urn \t urn \t urn`. The CEX files of the texts offering those urn-cited passages may be in the local CEX library.
-- Or pre-dfiend "text-sets" on GitHub, pointing to texts also on GitHub.
+The first step will be for the user to select two or more texts and populate two or more parallel columns in the main body of the page. This is in a lot of ways the trickiest part, in my experience.
+
+I am inclined to put the burden on the app's hosting editor.
+
+To get some texts to align they need to point the app to:
+
+- A library, in `.cex` form, that has the texts to be aligned.
+- URNs identifying passages in two or more texts to be aligned. This requires knowing the citation-scheme of the texts in question. 
+
+So, rather than an elaborate process of discovery, let's just have users load sets of texts from pre-defined "alignment-sets." These can be in the `/collections` directory as `.tsv` files:
+
+	desc \t cex-library \t cts-urn \t cts-urn \t …
+
+`desc` can be a human-readable description of the alignment-set, *e.g.* "Odyssey, Book 1, 1-150: Greek, English, Portuguese."
+
+`cex-library` will be a path to a `.cex` file that contains the texts to be aligned.
+
+Each `cts-urn` will be a range-urn
+
+> Its `sentence` property is a URN is a range CTS-URN, "from this passage to this other passage". For example:
+
+>	urn:cts:greekLit:tlg0012.tlg001.allen:1.1.token.1-1.7.token.8
+
+> The part we are interested in is `1.1.token.1-1.7.token.8`.
+
+> From this, we can construct a "from-URN" and a "to-URN":
+
+> - From: `urn:cts:greekLit:tlg0012.tlg001.allen:1.1.token.1`
+> - To: `urn:cts:greekLit:tlg0012.tlg001.allen:1.7.token.8`
+
+> From the `text` column, we see that this sentence is in `texts/Iliad_tokenized.cex`.
+
+> Reading that file, skipping everything until after the `#!ctsdata` line, we can find the "from-URN" and grab it, then grab all following lines until, and including, the line identified with the "to-URN".
+
+> Now we have the tokens identified as being part of a sentence, and each token has a very explicit CTS-URN identifier.
+
 
 #### Alignment
 
