@@ -1,0 +1,131 @@
+// 
+
+#!cexversion
+3.0
+
+#!citelibrary
+name#Bashō, haiku
+urn#urn:cite2:cex:fufolio.2019a:BashoText
+license#CC Share Alike.  For details, see more info.
+
+
+#!ctscatalog
+urn#citationScheme#groupName#workTitle#versionLabel#exemplarLabel#online#lang
+urn:cts:fuMisc:basho.kawazu.fuEd:#line#Matsuo Bashō (松尾 芭蕉, 1644–1694)#Furu ike ya#F.U. Demo, kanji##true#jpn
+urn:cts:fuMisc:basho.kawazu.fuEdKana:#line#Matsuo Bashō (松尾 芭蕉, 1644–1694)#Furu ike ya#F.U. Demo, hiragana##true#jpn
+urn:cts:fuMisc:basho.kawazu.fuEd.tok:#line/token#Matsuo Bashō (松尾 芭蕉, 1644–1694)#Furu ike ya#F.U. Demo, kanji#tokeized#true#jpn
+urn:cts:fuMisc:basho.kawazu.fuEdKana.tok:#line/token#Matsuo Bashō (松尾 芭蕉, 1644–1694)#Furu ike ya#F.U. Demo, hiragana#tokenized#true#jpn
+urn:cts:fuMisc:basho.kawazu.fuEdRom:#line#Matsuo Bashō (松尾 芭蕉, 1644–1694)#Furu ike ya#F.U. Demo, Romaji##true#jpn
+urn:cts:fuMisc:basho.kawazu.fuEdRom.tok:#line/token#Matsuo Bashō (松尾 芭蕉, 1644–1694)#Furu ike ya#F.U. Demo, Romaji#tokenized#true#jpn
+urn:cts:fuMisc:basho.kawazu.fuTransEng:#line/token#Matsuo Bashō (松尾 芭蕉, 1644–1694)#Furu ike ya#F.U. Demo, Literal English##true#eng
+urn:cts:fuMisc:basho.kawazu.fuTransEng.tok:#line/token#Matsuo Bashō (松尾 芭蕉, 1644–1694)#Furu ike ya#F.U. Demo, Literal English#tokenized#true#eng
+urn:cts:fuMisc:basho.kawazu.hearn:#line#Matsuo Bashō (松尾 芭蕉, 1644–1694)#Furu ike ya#Lefcadio Hearn, trans.##true#eng
+urn:cts:fuMisc:basho.kawazu.page:#line#Matsuo Bashō (松尾 芭蕉, 1644–1694)#Furu ike ya#Curtis Hidden Page, trans.##true#eng
+urn:cts:fuMisc:basho.kawazu.saijiki:#line/token#Matsuo Bashō (松尾 芭蕉, 1644–1694)#Furu ike ya#Saijiki analysis##true#eng
+urn:cts:fuMisc:basho.kawazu.marks:#line#Matsuo Bashō (松尾 芭蕉, 1644–1694)#Furu ike ya#Alfred H. Marks, trans.##true#eng
+
+// Kanji
+#!ctsdata
+urn:cts:fuMisc:basho.kawazu.fuEd:1#古池や
+urn:cts:fuMisc:basho.kawazu.fuEd:2#蛙飛こむ
+urn:cts:fuMisc:basho.kawazu.fuEd:3#水のおと
+
+// Hiragana
+#!ctsdata
+urn:cts:fuMisc:basho.kawazu.fuEdKana:1#ふるいけや
+urn:cts:fuMisc:basho.kawazu.fuEdKana:2#かわずとびこむ
+urn:cts:fuMisc:basho.kawazu.fuEdKana:3#みずのおと
+
+// Kanji, tokenized
+#!ctsdata
+urn:cts:fuMisc:basho.kawazu.fuEd.tok:1.1#古
+urn:cts:fuMisc:basho.kawazu.fuEd.tok:1.2#池
+urn:cts:fuMisc:basho.kawazu.fuEd.tok:1.3#や
+urn:cts:fuMisc:basho.kawazu.fuEd.tok:2.1#蛙
+urn:cts:fuMisc:basho.kawazu.fuEd.tok:2.2#飛
+urn:cts:fuMisc:basho.kawazu.fuEd.tok:2.3#こむ
+urn:cts:fuMisc:basho.kawazu.fuEd.tok:3.1#水
+urn:cts:fuMisc:basho.kawazu.fuEd.tok:3.2#の
+urn:cts:fuMisc:basho.kawazu.fuEd.tok:3.3#おと
+
+// Hiragana, tokenized
+#!ctsdata
+urn:cts:fuMisc:basho.kawazu.fuEdKana.tok:1.1#ふ
+urn:cts:fuMisc:basho.kawazu.fuEdKana.tok:1.2#る
+urn:cts:fuMisc:basho.kawazu.fuEdKana.tok:1.3#い
+urn:cts:fuMisc:basho.kawazu.fuEdKana.tok:1.4#け
+urn:cts:fuMisc:basho.kawazu.fuEdKana.tok:1.5#や
+urn:cts:fuMisc:basho.kawazu.fuEdKana.tok:2.1#か
+urn:cts:fuMisc:basho.kawazu.fuEdKana.tok:2.2#わ
+urn:cts:fuMisc:basho.kawazu.fuEdKana.tok:2.3#ず
+urn:cts:fuMisc:basho.kawazu.fuEdKana.tok:2.4#と
+urn:cts:fuMisc:basho.kawazu.fuEdKana.tok:2.5#び
+urn:cts:fuMisc:basho.kawazu.fuEdKana.tok:2.6#こ
+urn:cts:fuMisc:basho.kawazu.fuEdKana.tok:2.7#む
+urn:cts:fuMisc:basho.kawazu.fuEdKana.tok:3.1#み
+urn:cts:fuMisc:basho.kawazu.fuEdKana.tok:3.2#ず
+urn:cts:fuMisc:basho.kawazu.fuEdKana.tok:3.3#の
+urn:cts:fuMisc:basho.kawazu.fuEdKana.tok:3.4#お
+urn:cts:fuMisc:basho.kawazu.fuEdKana.tok:3.5#と
+
+// Romaji
+#!ctsdata
+urn:cts:fuMisc:basho.kawazu.fuEdRom:1#Furu ike ya 
+urn:cts:fuMisc:basho.kawazu.fuEdRom:2#kawazu tobikomu 
+urn:cts:fuMisc:basho.kawazu.fuEdRom:3#mizu no oto
+
+// Romaji, tokenized
+#!ctsdata
+urn:cts:fuMisc:basho.kawazu.fuEdRom.tok:1.1#Furu 
+urn:cts:fuMisc:basho.kawazu.fuEdRom.tok:1.2#ike 
+urn:cts:fuMisc:basho.kawazu.fuEdRom.tok:1.3#ya 
+urn:cts:fuMisc:basho.kawazu.fuEdRom.tok:2.1#kawazu 
+urn:cts:fuMisc:basho.kawazu.fuEdRom.tok:2.2#tobikomu 
+urn:cts:fuMisc:basho.kawazu.fuEdRom.tok:3.1#mizu 
+urn:cts:fuMisc:basho.kawazu.fuEdRom.tok:3.2#no 
+urn:cts:fuMisc:basho.kawazu.fuEdRom.tok:3.3#oto
+
+// English
+#!ctsdata
+urn:cts:fuMisc:basho.kawazu.fuTransEng:1#old pond …
+urn:cts:fuMisc:basho.kawazu.fuTransEng:2#frog jumping into 
+urn:cts:fuMisc:basho.kawazu.fuTransEng:3#water’s sound
+
+// English, literal, tokenized
+#!ctsdata
+urn:cts:fuMisc:basho.kawazu.fuTransEng.tok:1.1#old 
+urn:cts:fuMisc:basho.kawazu.fuTransEng.tok:1.2#pond 
+urn:cts:fuMisc:basho.kawazu.fuTransEng.tok:1.3#…
+urn:cts:fuMisc:basho.kawazu.fuTransEng.tok:2.1#frog 
+urn:cts:fuMisc:basho.kawazu.fuTransEng.tok:2.2#jumping into 
+urn:cts:fuMisc:basho.kawazu.fuTransEng.tok:3.1#water 
+urn:cts:fuMisc:basho.kawazu.fuTransEng.tok:3.2#’s 
+urn:cts:fuMisc:basho.kawazu.fuTransEng.tok:3.3#sound
+
+// English, Lafcadio Hearn
+#!ctsdata
+urn:cts:fuMisc:basho.kawazu.hearn:1#Old pond
+urn:cts:fuMisc:basho.kawazu.hearn:2#frog jumped in
+urn:cts:fuMisc:basho.kawazu.hearn:3#sound of water.
+
+// English, Curtis Hidden Page
+#!ctsdata
+urn:cts:fuMisc:basho.kawazu.page:1#A lonely pond in age-old stillness sleeps . . .
+urn:cts:fuMisc:basho.kawazu.page:2#Apart, unstirred by sound or motion . . . till
+urn:cts:fuMisc:basho.kawazu.page:3#Suddenly into it a lithe frog leaps.
+
+// Kigo
+#!ctsdata
+urn:cts:fuMisc:basho.kawazu.saijiki:1#elegance
+urn:cts:fuMisc:basho.kawazu.saijiki:2#springtime
+urn:cts:fuMisc:basho.kawazu.saijiki:3#vulgarity
+
+// Alfred H. Marks
+#!ctsdata
+urn:cts:fuMisc:basho.kawazu.marks:1#There once was a curious frog
+urn:cts:fuMisc:basho.kawazu.marks:2#Who sat by a pond on a log
+urn:cts:fuMisc:basho.kawazu.marks:3#And, to see what resulted,
+urn:cts:fuMisc:basho.kawazu.marks:4#In the pond catapulted
+urn:cts:fuMisc:basho.kawazu.marks:5#With a water-noise heard round the bog.
+
+
