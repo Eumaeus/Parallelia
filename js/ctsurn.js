@@ -27,6 +27,11 @@ class CtsUrn {
   toString() {
     return `${this.urnstring}`;
   }
+
+  equals(other) {
+  	return this.toString() == other.toString();
+  }
+
 }
 
 
@@ -256,7 +261,8 @@ function testMethod(urn, message, testpassed) {
 workUrn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:");
 versionUrn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:");
 exemplarUrn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.token:");
-passageUrn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.token:1.1");
+passageUrn  = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.token:1.1");
+passageUrn2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.token:1.1");
 rangeUrn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.1-3.3");
 
 workPassage = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:10.12")
@@ -282,6 +288,18 @@ contains3 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:24.1.3")
 contains4 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:25.1.3")
 
 // TESTS
+
+testMethod(
+	passageUrn,
+	"equals(CtsUrn, CtsUrn)",
+	passageUrn.equals(passageUrn2)
+);
+
+testMethod(
+	passageUrn,
+	"equals(CtsUrn, String)",
+	passageUrn.equals("urn:cts:greekLit:tlg0012.tlg001.allen.token:1.1")
+);
 
 testMethod(
 	workUrn,
@@ -334,13 +352,14 @@ testMethod(
 testMethod(
 	passageUrn,
 	"dropPassage()",
-	dropPassage(passageUrn).toString() == "urn:cts:greekLit:tlg0012.tlg001.allen.token:"
+
+	dropPassage(passageUrn).equals("urn:cts:greekLit:tlg0012.tlg001.allen.token:")
 );
 
 testMethod(
 	passageUrn,
 	"replacePassage()",
-	replacePassage(passageUrn, "2.2").toString() == "urn:cts:greekLit:tlg0012.tlg001.allen.token:2.2"
+	replacePassage(passageUrn, "2.2").equals("urn:cts:greekLit:tlg0012.tlg001.allen.token:2.2") 
 );
 
 testMethod(
