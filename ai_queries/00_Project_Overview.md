@@ -70,6 +70,11 @@ To get some texts to align they need to point the app to:
 - A library, in `.cex` form, that has the texts to be aligned.
 - URNs identifying passages in two or more texts to be aligned. This requires knowing the citation-scheme of the texts in question. 
 
+**CEX Libraries**
+
+
+**Alignment Sets**
+
 So, rather than an elaborate process of discovery, let's just have users load sets of texts from pre-defined "alignment-sets." These can be in the `/collections` directory as `.tsv` files:
 
 	desc \t cex-library \t cts-urn \t cts-urn \t …
@@ -120,3 +125,97 @@ Each `cts-urn` will be a range-urn
 
 - Should load texts using CTS-URNs. 
 - There are niftly color-palettes for coloring lists so that adjacent items contrast.
+
+### Notes on CTS texts in CEX
+
+- CTS defines a "text" as "an ordered hierarchy of citation-objecs."
+- In a `#!ctsdata` block of a CEX file, the list of tuples, `urn # text`, captures this.
+	- The structure of the CTS-URN capture the hierarchy of bibliography + passage: "Homer . *Iliad* . some-edition : book . line" or "New Testament . Luke . Greek . tokenized : chapter . verse . token".
+	- The sequence of those tuples captures the "order" of those citation-objects.
+- The `#!ctscatalog` gives human-readable metadata for interpreting the CTS-URNs in the data.
+
+We can and should capitalize on the structure of the CTS-URN when working with texts in CTS.
+
+Take this notional CTS text (assume this is the whole text).:
+
+~~~
+#!ctsdata
+urn:cts:greekLit:tlg0031.tlg003.kjv.token:1.1.1#Forasmuch
+urn:cts:greekLit:tlg0031.tlg003.kjv.token:1.1.2#as
+urn:cts:greekLit:tlg0031.tlg003.kjv.token:1.1.3#many
+urn:cts:greekLit:tlg0031.tlg003.kjv.token:1.1.4#have
+urn:cts:greekLit:tlg0031.tlg003.kjv.token:1.1.5#…
+urn:cts:greekLit:tlg0031.tlg003.kjv.token:1.2.1#Even
+urn:cts:greekLit:tlg0031.tlg003.kjv.token:1.2.2#as
+urn:cts:greekLit:tlg0031.tlg003.kjv.token:1.2.3#they
+urn:cts:greekLit:tlg0031.tlg003.kjv.token:1.2.4#delivered
+urn:cts:greekLit:tlg0031.tlg003.kjv.token:1.2.5#…
+urn:cts:greekLit:tlg0031.tlg003.kjv.token:1.3.1#It
+urn:cts:greekLit:tlg0031.tlg003.kjv.token:1.3.2#seemed
+urn:cts:greekLit:tlg0031.tlg003.kjv.token:1.3.3#good
+urn:cts:greekLit:tlg0031.tlg003.kjv.token:1.3.4#to
+urn:cts:greekLit:tlg0031.tlg003.kjv.token:1.3.5#me
+~~~
+
+If we want to retrieve the text, "Forasmuch as many have … Even as they delivered … It seemed good to me", we could do it in four ways using CTS-URNs.
+
+- Range-urn at the leaf-node: `urn:cts:greekLit:tlg0031.tlg003.kjv.token:1.1.1-1.3.5` (from leaf-node to leaf-node)
+- Range-urn at a containing-level: `urn:cts:greekLit:tlg0031.tlg003.kjv.token:1.1-1.3` (from 1.1 and all of its contents, to 1.3 and all of its contents)
+- Containing-urn: `urn:cts:greekLit:tlg0031.tlg003.kjv.token:1` (all contents of 1)
+- Text-level: ``urn:cts:greekLit:tlg0031.tlg003.kjv.token:` (all text contents identified by this CTS-URN)
+
+If we want "Even as they delivered … It seemed good to me" we have two choices:
+
+- `urn:cts:greekLit:tlg0031.tlg003.kjv.token:1.2.1-1.3.5`
+- `urn:cts:greekLit:tlg0031.tlg003.kjv.token:1.2-1.3`
+
+If we want "many have … Even as", we have only one choice:
+
+- `urn:cts:greekLit:tlg0031.tlg003.kjv.token:1.1.3-1.2.2`
+
+We have developed this approach to texts to allow us to cite passages in the traditional way—"Luke 2.1"—while working flexibly and precisely with contents that do not align with the canonical citation.
+
+### Notes on Alignment with CTS-URNs and CITE2-URNs
+
+CTS-URNs identify passages of text in an "ordered hiearchy of citation objects." CITE2-URNs identify objects with defined properties in a collection. So… CTS-URNs are for texts, and CITE2-URNs are for everything else.
+
+For textual alignment, we need three things:
+
+- An "aligment object", identified by a CITE2-URN, in a collection of alignment objects. 
+- Some citation-objects that "belong to" that alignment object. These are passages from two or more texts. There may be many.
+- An index explicitly associationg the aligned citation-objects with the alignment-object.
+
+So…
+
+- Texts with "tokens" (verses, word, syllables, characters… it doesn't matter as long a each is citable with a CTS-URN).
+- A collection of alignment-objects cited by CITE2-URN, with some kind of label, editor-attribution, etc.
+- An index of Passages to Alignment Objects, CTS-URNs to CITE2-URNs. In my implementation, the relationship between them is made explicit with another CITE2-URN, which simply says "the relationship here is that this Alignment object 'aligns' this Passage."
+
+What this gives us:
+
+- Many-to-many alignments.
+- A passage can be part of many alignments.
+- Aligned passages do not need to be contiguous.
+- The Alignment Objects and the index are unordered, since the only order that matters is that of the original texts, and that order is captured by their CEX serialization.
+- The citation-schemes of the texts under alignment do not even need to be synchronized in any particular way (although they usually will be). Any CTS-URN can be "aligned" to any other(s).
+
+**Examples**
+
+In the directory `/alignments` in the repository <https://github.com/Eumaeus/Parallelia> there are some sample CEX file.
+
+These contain `#!ctscatalog` blocks with bibliography for some texts, `#!ctsdata` blocks containing the contents of some texts, and examples of what alignment-data looks like:
+
+- `alignments/Catullus1-aligned.cex` An alignment of Catullus Poem 1, between a Latin edition and an English translation.
+- `alignments/Luke_1.5-1.6.cex` An alignment of Luke, Chapter 1, verses 5-6, among the Greek edition, the Latin translation, and an English translation.
+- `alignments/Luke_1.5-1.6_blank.cex` A CEX file set up as a blank-template for doing the alignment above.
+- `alignments/Frog-Haiku.cex` An alignment of three different tokenizations of the famouse haiku from Bashō, "Furu Ike Ya".
+
+
+### Steps
+
+- Javascript CTS-CEX functions
+	- Extract Text(s): Given a large CEX library, extract specific texts identified by URNs, with `#!ctscatalog` data, and each text in its own `#!ctsdata` block.
+	- Merge CEX: Given a list of CEX files, merge them into one, with one `#!ctscatalog` adn each text in its own `#!ctsdata` block.
+	- Add Alignments to CEX: Given a CEX file with some alignments, and another, presumably more inclusive library of texts, create a CEX that has all the contents of the larger CEX file, plus the alignment data from the first file.
+	- `function getpassage(ctsurn)`: Given a CEX file, or an in-data representation of a CEX file, get the citable passages defined by a range-level CTS-URN, *e.g.* `urn:cts:greekLit:tlg0031.tlg003.wh:1.1.token.1-1.2.token.3` (leaf-node to leaf-node) **or** `urn:cts:greekLit:tlg0031.tlg003.wh:1.1-1.2` (containing node, with all its contents, to containing node, including all its contents).
+	- Extract Passages to CEX: Given one or more range-urns, from one or more texts, generate a CEX file, with proper `#!ctscatalog` block, containing `#!ctsdata` blocks with the passages defined by the range-urns. **If more than one range is given from the same text, the passages should be in separate `#!ctsdata` blocks, one for each range-urn, but the sequence of the blocks should follow the sequence of the passages in the original CEX file.**

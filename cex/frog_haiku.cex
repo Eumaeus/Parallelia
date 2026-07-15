@@ -13,7 +13,7 @@ license#CC Share Alike.  For details, see more info.
 urn#citationScheme#groupName#workTitle#versionLabel#exemplarLabel#online#lang
 urn:cts:fuMisc:basho.kawazu.fuEd:#line#Matsuo Bashō (松尾 芭蕉, 1644–1694)#Furu ike ya#F.U. Demo, kanji##true#jpn
 urn:cts:fuMisc:basho.kawazu.fuEdKana:#line#Matsuo Bashō (松尾 芭蕉, 1644–1694)#Furu ike ya#F.U. Demo, hiragana##true#jpn
-urn:cts:fuMisc:basho.kawazu.fuEd.tok:#line/token#Matsuo Bashō (松尾 芭蕉, 1644–1694)#Furu ike ya#F.U. Demo, kanji#tokeized#true#jpn
+urn:cts:fuMisc:basho.kawazu.fuEd.tok:#line/token#Matsuo Bashō (松尾 芭蕉, 1644–1694)#Furu ike ya#F.U. Demo, kanji#tokenized#true#jpn
 urn:cts:fuMisc:basho.kawazu.fuEdKana.tok:#line/token#Matsuo Bashō (松尾 芭蕉, 1644–1694)#Furu ike ya#F.U. Demo, hiragana#tokenized#true#jpn
 urn:cts:fuMisc:basho.kawazu.fuEdRom:#line#Matsuo Bashō (松尾 芭蕉, 1644–1694)#Furu ike ya#F.U. Demo, Romaji##true#jpn
 urn:cts:fuMisc:basho.kawazu.fuEdRom.tok:#line/token#Matsuo Bashō (松尾 芭蕉, 1644–1694)#Furu ike ya#F.U. Demo, Romaji#tokenized#true#jpn
