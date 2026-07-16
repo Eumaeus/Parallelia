@@ -1,3 +1,25 @@
+// --------------------------
+// --- CtsUrn Class ---------
+//
+//   CTS URNs have 5 components:
+//   urn:cts:<namespace>:<bibliography-component>:<passage-component>
+//
+//   <bibliography-component> captures the *bibliographic hierarchy*
+//   in period-separated fields.
+//
+//   <passage-component> captures the *passage-hierarchy*
+//   in period-separated fields. It may express a *range*
+//   from passage to another with two period-separated passeges
+//   separated by a hyphen.
+//
+//   NOTE: The values in the <passage-component> are *labels* not
+//   *integers*, although integers are often used as labels. E.g.
+//   "Iliad 1.1", but also "Euclid, Elements, 1 Postulate 1" 
+//   or "Aristpohanes Frogs 1153a".
+//
+// --------------------------
+
+
 // --- Define CtsUrnError ---
 
 class CtsUrnError extends Error {
@@ -77,6 +99,12 @@ class CtsUrn {
 		}
 	}
 
+	// Returns the number of fields in the citation-component of the CtsUrn
+	//@returns {Int}
+	citationLevel() {
+		return 0;
+	}
+
 	// -----------------------
   // --- URN Comparison ----
 
@@ -93,8 +121,8 @@ class CtsUrn {
 	// @param {CtsUrn} other - a CtsUrn at the version- or exemplar-level
 	// @returns {Boolean} 
 	versionEquals(other) {
-		let vu1 = versionLevelUrn(this);
-		let vu2 = versionLevelUrn(other);
+		let vu1 = this.versionLevelUrn();
+		let vu2 = other.versionLevelUrn();
 		return vu1.equals(vu2);
 	}
 
@@ -102,21 +130,21 @@ class CtsUrn {
 	// @param {CtsUrn} other - a CtsUrn at the work-, version- or exemplar-level
 	// @returns {CtsUrn} 
 	biblIncludes(other) {
-		u1 = this.dropPassage();
-		u2 = other.dropPassage();
+		let u1 = this.dropPassage();
+		let u2 = other.dropPassage();
 
 		if (u1.equals(u2)) return true;
 
 		if (u2.isExemplarUrn() && u1.isVersionUrn()) {
-			if (u1.equals(versionLevelUrn(u2))) return true;
+			if (u1.equals(u2.versionLevelUrn())) return true;
 		}
 
 		if (u2.isExemplarUrn() && u1.isWorkUrn()) {
-			if (u1.equals(workLevelUrn(u2))) return true;
+			if (u1.equals(u2.workLevelUrn())) return true;
 		}
 
 		if (u2.isVersionUrn()) {
-			if (u1.equals(workLevelUrn(u2))) return true;
+			if (u1.equals(u2.workLevelUrn())) return true;
 		}
 
 		return false;
@@ -126,13 +154,68 @@ class CtsUrn {
 	// @param {CtsUrn} other - a CtsUrn 
 	// @returns {CtsUrn} 
 	passageEquals(other) {
-		if ( !biblIncludes(this, other)) {
+		if ( !this.biblIncludes(other)) {
 			return false;
 		} else {
 			if (this.getPassage() == other.getPassage()) return true;
 		}
 		return false;
 	}
+
+	// A helper-function for passageIncludes(), below. Takes two string-representations of a passage-hierarchy and returns 'true' if the first includes, or "contains" the second
+	// @param {String} s1
+	// @param {String} s2 
+	// @returns {Boolean} 
+	passageStrIncludes(s1, s2) {
+		// get components
+		let cc1 = s1.split(".");
+		let cc2 = s2.split(".");
+
+		// Easy one…
+		if (cc1.length > cc2.length) return false;
+
+		// Get them to the same number of fields
+		cc2 = cc2.slice(0, cc1.length);
+
+		if (cc1.toString() == cc2.toString()) return true;
+
+		return false;
+	}
+
+	// Looks ONLY at the passage-components of two URNs. Returns true if the hierarchy expressed by the first contains that of the second. Does some careful consideration of ranges.
+	// @param {CtsUrn} other
+	// @returns {Boolean} 
+	passageIncludes(other) {
+		p1 = getPassage(this);
+		p2 = getPassage(other);
+		// easy one…
+		if (p1 == p2) return true;
+
+		// non-ranges
+
+		// A point cannot contain a range
+
+		if (!p1.isRange() && p2.isRange()) return false;
+
+		// A range can contain a point
+
+		return false;
+	}
+
+	// Looks at the passage-components of two URNs, `this` and `other`. Returns true if the hierarchy expressed by the first contains that of the second. Does some careful consideration of ranges. Returns false if the bibliographic hierarchy of the first does not "include" that of the second
+	// @param {CtsUrn} urn2 - a CtsUrn 
+	// @returns {Boolean} 
+	textIncludes(urn2) {
+		return false;
+	}
+
+	//Shorthand function. Ignoring citation-components, are the URNs' bibliography-components equal.
+	//@param {CtsUrn} - other
+	//@returns {Boolean}
+	sameText(other) {
+		return false;
+	}
+
 
 	// ---------------------
 	// --- URN Retrieval ---
@@ -197,7 +280,6 @@ class CtsUrn {
 		return this.splitRange()[1];
 	}
 
-
 	// Takes a CtsUrn and returns a CtsUrn identifying only the version-level. 
 	// (Drops passage!)
 	// @param {CtsUrn} urn - a CtsUrn at the version- or exemplar-level
@@ -210,7 +292,7 @@ class CtsUrn {
 			throw new CtsUrnError(`URN is only at the work level. No version: "${urn}"`);
 		} else {
 			let newBib = bibParts.slice(0, 3).join('.');
-			let parts[3] = newBib;
+			parts[3] = newBib;
 			let newParts = parts.slice(0, 4).join(":") + ":";
 			return new CtsUrn(newParts);
 		}
@@ -228,10 +310,51 @@ class CtsUrn {
 			throw new CtsUrnError(`URN is only at the group level. No work, version, or exemplar: "${urn}"`);
 		} else {
 			let newBib = bibParts.slice(0, 2).join('.');
-			let parts[3] = newBib;
+			parts[3] = newBib;
 			let newParts = parts.slice(0, 4).join(":") + ":";
 			return new CtsUrn(newParts);
 		}
+	}
+
+	// Given an exemplar-level CtsUrn, remove the exemplar-component of the URN, leaving everything else the same.
+	// @returns {CtsUrn}
+	versionFromExemplar() {
+		return null;
+	}
+
+	// Adds the String `exemplarId` to a version-level URN, leaving everything else unchanged.
+	// @param {String} - exemplarId
+	// @returns {CtsUrn}
+	addExemplar(exemplarId) {
+		return null;
+	}
+
+	//Reduce the passage-hierarchy of the CtsUrn by one level.
+	//@returns {CtsUrn}
+	chopPassage() {
+		return null;
+	}
+
+	//Extend the passage-hierarchy of the CtsUrn by one level, adding `citeString` as the value for the new level
+	//@param {String} - citeString
+	//@returns CtsUrn
+	extendPassage(citeString) {
+		return null;
+	}
+
+	//Chops the citation-hierarchy until it is `level`-levels deep.
+	//Error if `level` is greater than the current citation-level.
+	//@param {Int} - level
+	//@returns {CtsUrn}
+	citationToLevel(level) {
+		return null;
+	}
+
+	// Chop the citation-level of whichever URN has a deeper citation-hiearchy so that both are at the same level
+	//@param {CtsUrn} - other
+	//@returns [{CtsUrn}, {CtsUrn}]
+	equalizeCitationLevels(other){
+		return [null, null];
 	}
 
 } // end `class CtsUrn`
@@ -251,112 +374,4 @@ class CtsUrn {
 
 
 
-
-
-
-
-
-	// A helper-function for passageIncludes(), below. Takes two string-representations of a passage-hierarchy and returns 'true' if the first includes, or "contains" the second
-	// @param {String} s1
-	// @param {String} s2 
-	// @returns {Boolean} 
-	passageStrIncludes(s1, s2) {
-		// get components
-		let cc1 = s1.split(".");
-		let cc2 = s2.split(".");
-
-		// Easy one…
-		if (cc1.length > cc2.length) return false;
-
-		// Get them to the same number of fields
-		cc2 = cc2.slice(0, cc1.length);
-
-		if (cc1.toString() == cc2.toString()) return true;
-
-		return false;
-	}
-
-
-
-	// Looks ONLY at the passage-components of two URNs. Returns true if the hierarchy expressed by the first contains that of the second. Does some careful consideration of ranges.
-	// @param {CtsUrn} other
-	// @returns {Boolean} 
-	passageIncludes(other) {
-		p1 = getPassage(this);
-		p2 = getPassage(other);
-		// easy one…
-		if (p1 == p2) return true;
-
-		// non-ranges
-
-		// A point cannot contain a range
-
-		if (!p1.isRange() && p2.isRange()) return false;
-
-		// A range can contain a point
-
-		return false;
-	}
-
-
-	// Looks at the passage-components of two URNs, `this` and `other`. Returns true if the hierarchy expressed by the first contains that of the second. Does some careful consideration of ranges. Returns false if the bibliographic hierarchy of the first does not "include" that of the second
-	// @param {CtsUrn} urn2 - a CtsUrn 
-	// @returns {Boolean} 
-	textIncludes(urn2) {
-		return false;
-	}
-
-// Given an exemplar-level CtsUrn, remove the exemplar-component of the URN, leaving everything else the same.
-// @returns {CtsUrn}
-versionFromExemplar() {
-	return null;
-}
-
-// Adds the String `exemplarId` to a version-level URN, leaving everything else unchanged.
-// @param {String} - exemplarId
-// @returns {CtsUrn}
-addExemplar(exemplarId) {
-	return null;
-}
-
-//Reduce the passage-hierarchy of the CtsUrn by one level.
-//@returns {CtsUrn}
-chopPassage() {
-	return null;
-}
-
-//Extend the passage-hierarchy of the CtsUrn by one level, adding `citeString` as the value for the new level
-//@param {String} - citeString
-//@returns CtsUrn
-extendPassage(citeString) {
-	return null;
-}
-
-//Shorthand function. Ignoring citation-components, are the URNs' bibliography-components equal.
-//@param {CtsUrn} - other
-//@returns {Boolean}
-sameText(other) {
-	return false;
-}
-
-// Returns the number of fields in the citation-component of the CtsUrn
-//@returns {Int}
-citationLevel() {
-	return 0;
-}
-
-//Chops the citation-hierarchy until it is `level`-levels deep.
-//Error if `level` is greater than the current citation-level.
-//@param {Int} - level
-//@returns {CtsUrn}
-citationToLevel(level) {
-	return null;
-}
-
-// Chop the citation-level of whichever URN has a deeper citation-hiearchy so that both are at the same level
-//@param {CtsUrn} - other
-//@returns [{CtsUrn}, {CtsUrn}]
-equalizeCitationLevels(other){
-	return [null, null];
-}
 

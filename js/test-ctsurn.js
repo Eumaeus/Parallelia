@@ -85,14 +85,14 @@ var ps2 = "1.2.3.3"
 
 testMethod(
 	passageUrn,
-	`passageStrIncludes(${ps1}, ${ps2})`, 
-	passageStrIncludes(ps1, ps2)
+	`this.passageStrIncludes(${ps1}, ${ps2})`, 
+	passageUrn.passageStrIncludes(ps1, ps2)
 );
 
 testMethod(
 	passageUrn,
-	`SHOULD FAIL: passageStrIncludes(${ps2}, ${ps1})`,
-	passageStrIncludes(ps2, ps1)
+	`SHOULD FAIL: this.passageStrIncludes(${ps2}, ${ps1})`,
+	passageUrn.passageStrIncludes(ps2, ps1)
 );
 
 var ps1 = "1";
@@ -100,14 +100,14 @@ var ps2 = "1.2"
 
 testMethod(
 	passageUrn,
-	`passageStrIncludes(${ps1}, ${ps2})`, 
-	passageStrIncludes(ps1, ps2)
+	`this.passageStrIncludes(${ps1}, ${ps2})`, 
+	passageUrn.passageStrIncludes(ps1, ps2)
 );
 
 testMethod(
 	passageUrn,
-	`SHOULD FAIL: passageStrIncludes(${ps2}, ${ps1})`,
-	passageStrIncludes(ps2, ps1)
+	`SHOULD FAIL: this.passageStrIncludes(${ps2}, ${ps1})`,
+	passageUrn.passageStrIncludes(ps2, ps1)
 );
 
 var ps1 = "1.1"
@@ -116,27 +116,27 @@ var ps2 = "1.2"
 
 testMethod(
 	passageUrn,
-	`SHOULD FAIL: passageStrIncludes(${ps2}, ${ps1})`,
-	passageStrIncludes(ps2, ps1)
+	`SHOULD FAIL: this.passageStrIncludes(${ps2}, ${ps1})`,
+	passageUrn.passageStrIncludes(ps2, ps1)
 );
 
 // equals() and equality
 
 testMethod(
 	passageUrn,
-	"equals(CtsUrn, CtsUrn)",
+	"this.equals(CtsUrn, CtsUrn)",
 	passageUrn.equals(passageUrn2)
 );
 
 testMethod(
 	passageUrn,
-	"equals(CtsUrn, String)",
+	"this.equals(CtsUrn, String)",
 	passageUrn.equals("urn:cts:greekLit:tlg0012.tlg001.allen.token:1.1")
 );
 
 testMethod(
 	passageUrn,
-	"SHOULD FAIL: CtsUrn == CtsUrn (WILL NOT WORK!)",
+	"SHOULD FAIL: CtsUrn == CtsUrn [WILL NOT WORK! Use urn.equals()]",
 	passageUrn == passageUrn2
 );
 
@@ -256,133 +256,133 @@ try {
 
 testMethod(
 	rangeUrn,
-	"rangeFrom()",
-	rangeFrom(rangeUrn).toString() == "urn:cts:greekLit:tlg0012.tlg001.allen:1.1" 
+	"this.rangeFrom()",
+	rangeUrn.rangeFrom().toString() == "urn:cts:greekLit:tlg0012.tlg001.allen:1.1" 
 );
 
 testMethod(
 	rangeUrn,
-	"rangeTo()",
-	rangeTo(rangeUrn).toString() == "urn:cts:greekLit:tlg0012.tlg001.allen:3.3" 
+	"this.rangeTo()",
+	rangeUrn.rangeTo().toString() == "urn:cts:greekLit:tlg0012.tlg001.allen:3.3" 
 );
 
 // versionLevelUrn(), workLevelUrn()
 
 testMethod(
 	exemplarUrn,
-	"versionLevelUrn()",
-	versionLevelUrn(exemplarUrn).toString() == "urn:cts:greekLit:tlg0012.tlg001.allen:" 
+	"this.versionLevelUrn()",
+	exemplarUrn.versionLevelUrn().toString() == "urn:cts:greekLit:tlg0012.tlg001.allen:" 
 );
 
 
 try {
 	testMethod(
 		workUrn,
-		"versionLevelUrn()",
-		versionLevelUrn(workUrn)
+		"this.versionLevelUrn()",
+		workUrn.versionLevelUrn()
 	);
 } catch(error){
-	targetElement.innerHTML += `<div><p style="color: navy"><code>versionLevelUrn()</code> errored correctly with work-level URN: <strong><code>${error}</code></strong></p></div>`;
+	targetElement.innerHTML += `<div><p style="color: navy"><code>this.versionLevelUrn()</code> errored correctly with work-level URN: <strong><code>${error}</code></strong></p></div>`;
 }
 
 testMethod(
 	exemplarUrn,
-	"workLevelUrn()",
-	workLevelUrn(exemplarUrn).equals(workUrn)
+	"this.workLevelUrn()",
+	exemplarUrn.workLevelUrn().equals(workUrn)
 );
 
 testMethod(
 	versionUrn,
-	"workLevelUrn()",
-	workLevelUrn(versionUrn).equals(workUrn)
+	"this.workLevelUrn()",
+	versionUrn.workLevelUrn().equals(workUrn)
 );
 
 // versionEquals(), biblIncludes()
 
 testMethod(
 	exemplarUrn,
-	"versionEquals()",
-	versionEquals(exemplarUrn, versionUrn)
+	"this.versionEquals()",
+	exemplarUrn.versionEquals(versionUrn)
 );
 
 testMethod(
 	workUrn,
-	"biblIncludes()",
-	biblIncludes(workUrn, versionUrn)
+	"this.biblIncludes()",
+	workUrn.biblIncludes(versionUrn)
 );
 
 testMethod(
 	versionUrn,
-	"biblIncludes()",
-	biblIncludes(versionUrn, exemplarUrn)
+	"this.biblIncludes()",
+	versionUrn.biblIncludes(exemplarUrn)
 );
 
 testMethod(
 	workUrn,
-	"biblIncludes()",
-	biblIncludes(workUrn, exemplarUrn)
+	"this.biblIncludes()",
+	workUrn.biblIncludes(exemplarUrn)
 );
 
 testMethod(
 	workUrn,
-	"biblIncludes()",
-	biblIncludes(workUrn, workUrn)
+	"this.biblIncludes()",
+	workUrn.biblIncludes(workUrn)
 );
 
 testMethod(
 	versionUrn,
-	"biblIncludes()",
-	biblIncludes(versionUrn, versionUrn)
+	"this.biblIncludes()",
+	versionUrn.biblIncludes(versionUrn)
 );
 
 testMethod(
 	exemplarUrn,
-	"biblIncludes()",
-	biblIncludes(exemplarUrn, exemplarUrn)
+	"this.biblIncludes()",
+	exemplarUrn.biblIncludes(exemplarUrn)
 );
 
 testMethod(
 	exemplarUrn,
-	"SHOULD FAIL: biblIncludes()",
-	biblIncludes(exemplarUrn, versionUrn)
+	"SHOULD FAIL: this.biblIncludes(). A more specific bibliography cannot include a more general one.",
+	exemplarUrn.biblIncludes(versionUrn)
 );
 
 testMethod(
 	exemplarUrn,
-	"SHOULD FAIL: biblIncludes()",
-	biblIncludes(exemplarUrn, workUrn)
+	"SHOULD FAIL: this.biblIncludes(). A more specific bibliography cannot include a more general one.",
+	exemplarUrn.biblIncludes(workUrn)
 );
 
 testMethod(
 	versionUrn,
-	"SHOULD FAIL: biblIncludes()",
-	biblIncludes(versionUrn, workUrn)
+	"SHOULD FAIL: this.biblIncludes(). A more specific bibliography cannot include a more general one.",
+	versionUrn.biblIncludes(workUrn)
 );
 
 testMethod(
 	versionUrn,
-	"SHOULD FAIL: biblIncludes()",
-	biblIncludes(versionUrn, workUrn)
+	"SHOULD FAIL: this.biblIncludes(). A more specific bibliography cannot include a more general one.",
+	versionUrn.biblIncludes(workUrn)
 );
 
 // passageEquals()
 
 testMethod(
 	identifies1,
-	"passageEquals()",
-	passageEquals(identifies1, identifies1)
+	"this.passageEquals()",
+	identifies1.passageEquals(identifies1)
 );
 
 testMethod(
 	identifies1,
-	"passageEquals()",
-	passageEquals(identifies1, identifies2)
+	"this.passageEquals()",
+	identifies1.passageEquals(identifies2)
 );
 
 testMethod(
 	contains1,
-	"SHOULD FAIL: passageEquals()",
-	passageEquals(contains1, contains2)
+	"SHOULD FAIL: this.passageEquals()",
+	contains1.passageEquals(contains2)
 );
 
 urnReport(workUrn);
