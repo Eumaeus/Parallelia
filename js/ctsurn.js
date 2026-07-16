@@ -71,6 +71,7 @@ class CtsUrn {
 	// Does the URN identify a range of passages?
 	// @returns {Boolean} 
 	isRange() {
+		if (!this.passage) return false;
 		return this.passage.includes('-');
 	}
 
@@ -264,9 +265,33 @@ class CtsUrn {
 		return this.splitRange()[1];
 	}
 
+	// Takes two CtsUrns and constructs a range-urn from `this` to `other`.
+	// In the case of ranges, take the start of `this` and the end of `other`.
+	//@param {CtsUrn} - other
+	//@returns {CtsUrn}
+	makeRange(other) {
+		if (!this.passage) {
+	    throw new CtsUrnError(`.makeRange(): Urn does not have passage-component: "${this}"`);
+	  }			
+	  if (!other.passage) {
+	    throw new CtsUrnError(`.makeRange(): Urn does not have passage-component: "${other}"`);
+	  }	
+		let startUrn = this
+		if (this.isRange()) {
+			startUrn = this.splitRange()[0];
+		}
+		let endUrn = other
+		if (other.isRange()) {
+			endUrn = other.splitRange()[1];
+		}
+		let startPsg = startUrn.passage;
+		let endPsg = endUrn.passage;
+		let base = this.dropPassage().toString();
+		return new CtsUrn(base + startPsg + "-" + endPsg);
+	}
+
 	// Takes a CtsUrn and returns a CtsUrn identifying only the version-level. 
 	// (Drops passage!)
-	// @param {CtsUrn} urn - a CtsUrn at the version- or exemplar-level
 	// @returns {CtsUrn} 
 	versionLevelUrn() {
 		let parts = this.toString().split(':');		
@@ -284,7 +309,6 @@ class CtsUrn {
 
 	// Takes a CtsUrn and returns a CtsUrn identifying only the work-level.
 	// (Drops passage!)
-	// @param {CtsUrn} urn - a CtsUrn at the work, version- or exemplar-level
 	// @returns {CtsUrn} 
 	workLevelUrn() {
 		let parts = this.toString().split(':');		
@@ -345,17 +369,43 @@ class CtsUrn {
     return new CtsUrn(newUrnStr);
 	}
 
-	//Reduce the passage-hierarchy of the CtsUrn by one level.
+	// Reduce the passage-hierarchy of the CtsUrn by one level.
+	// Works only on single passages, not ranges. 
+	// If there is no passage, just returns the URN.
 	//@returns {CtsUrn}
 	chopPassage() {
-		return null;
+		if (this.isRange()) {
+			throw new CtsUrnError(`'.chopPassage()' does not work on ranges. ${this.toString()}`);
+		}
+		if (!this.passage) {
+			return this;
+		}
+		let currentDepth = this.passageDepth();
+		if (currentDepth < 2) {
+			return this.dropPassage();
+		}
+		let noPassage = this.dropPassage();
+		let parts = this.passage.split(".");
+		let newPsg = parts.slice(0, parts.length-1).join(".");
+		return new CtsUrn(noPassage.toString() + newPsg);
 	}
 
-	//Extend the passage-hierarchy of the CtsUrn by one level, adding `citeString` as the value for the new level
+	//Extend the passage-hierarchy of the CtsUrn by one level, adding `citeString` as the value for the new level.
+	// Error if `this` is a range-urn.
 	//@param {String} - citeString
 	//@returns CtsUrn
 	extendPassage(citeString) {
-		return null;
+		if (this.isRange()) {
+			throw new CtsUrnError(`'.extendPassage()' does not work on ranges. ${this.toString()}`);
+		}
+		let baseStr = this.dropPassage().toString();
+		let psgStr = ""
+		if (!this.passage) {
+			psgStr = citeString; 
+		} else {
+			psgStr = this.passage + "." + citeString;
+		}
+		return new CtsUrn(baseStr + psgStr);
 	}
 
 	//Chops the citation-hierarchy until it is `level`-levels deep.

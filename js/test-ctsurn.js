@@ -415,6 +415,140 @@ try {
 }
 
 // -------------------
+// this.chopPassage()
+// -------------------
+
+var testUrn0 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:");
+var testUrn1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1");
+var testUrn2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.2");
+var testUrn3 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.2.3");
+
+var testRange2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.2-3.4");
+
+testMethod(
+	testUrn0,
+	"this.chopPassage()",
+	testUrn0.chopPassage() == "urn:cts:greekLit:tlg0012.tlg001.allen:"
+);
+
+testMethod(
+	testUrn1,
+	"this.chopPassage()",
+	testUrn1.chopPassage() == "urn:cts:greekLit:tlg0012.tlg001.allen:"
+);
+
+testMethod(
+	testUrn2,
+	"this.chopPassage()",
+	testUrn2.chopPassage() == "urn:cts:greekLit:tlg0012.tlg001.allen:1"
+);
+
+testMethod(
+	testUrn3,
+	"this.chopPassage()",
+	testUrn3.chopPassage() == "urn:cts:greekLit:tlg0012.tlg001.allen:1.2"
+);
+
+try {
+	testMethod(
+		testRange2,
+		`this.chopPassage()`,
+		testRange2.chopPassage().equals(testUrn0)
+	);
+} catch(error){
+	targetElement.innerHTML += `<div><p style="color: navy"><code>this.chopPassage()</code> errored correctly trying to deal with a range URN: <strong><code>${error}</code></strong></p></div>`;
+}
+
+// -------------------
+// .extendPassage()
+// -------------------
+
+var testUrn0 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:");
+var testUrn1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1");
+var testUrn3 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.2");
+
+var testRange1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.1-2.2");
+
+testMethod(
+	testUrn0,
+	"this.extendPassage()",
+	testUrn0.extendPassage("x") == "urn:cts:greekLit:tlg0012.tlg001.allen:x"
+);
+
+testMethod(
+	testUrn1,
+	"this.extendPassage()",
+	testUrn1.extendPassage("x") == "urn:cts:greekLit:tlg0012.tlg001.allen:1.x"
+);
+
+testMethod(
+	testUrn3,
+	"this.extendPassage()",
+	testUrn3.extendPassage("x") == "urn:cts:greekLit:tlg0012.tlg001.allen:1.2.x"
+);
+
+try {
+	testMethod(
+		testRange1,
+		`this.extendPassage()`,
+		testRange1.extendPassage("x").equals(testUrn0)
+	);
+} catch(error){
+	targetElement.innerHTML += `<div><p style="color: navy"><code>this.extendPassage()</code> errored correctly trying to deal with a range URN: <strong><code>${error}</code></strong></p></div>`;
+}
+
+// -------------------
+// .makeRange()
+// -------------------
+
+var testUrn0 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:");
+var testUrn1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1");
+var testUrn2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:2");
+var testUrn3 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.2");
+var testUrn4 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:3.4");
+
+var testRange1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.1-2.2");
+var testRange2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:3.3-4.4");
+
+testMethod(
+	testUrn1,
+	"this.makeRange()",
+	testUrn1.makeRange(testUrn2) == "urn:cts:greekLit:tlg0012.tlg001.allen:1-2"
+);
+
+testMethod(
+	testUrn3,
+	"this.makeRange()",
+	testUrn3.makeRange(testUrn4) == "urn:cts:greekLit:tlg0012.tlg001.allen:1.2-3.4"
+);
+
+testMethod(
+	testRange1,
+	"this.makeRange()",
+	testRange1.makeRange(testRange2) == "urn:cts:greekLit:tlg0012.tlg001.allen:1.1-4.4"
+);
+
+try {
+	testMethod(
+		testUrn0,
+		`this.makeRange()`,
+		testUrn0.makeRange(testUrn3).equals(testUrn3)
+	);
+} catch(error){
+	targetElement.innerHTML += `<div><p style="color: navy"><code>this.makeRange()</code> errored correctly trying to deal with no-passage URN: <strong><code>${error}</code></strong></p></div>`;
+}
+
+try {
+	testMethod(
+		testUrn3,
+		`this.makeRange()`,
+		testUrn3.makeRange(testUrn0).equals(testUrn3)
+	);
+} catch(error){
+	targetElement.innerHTML += `<div><p style="color: navy"><code>this.makeRange()</code> errored correctly trying to deal with no-passage URN: <strong><code>${error}</code></strong></p></div>`;
+}
+
+// -------------------
 // equals() and equality
 // -------------------
 
