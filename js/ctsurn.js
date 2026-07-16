@@ -104,10 +104,26 @@ class CtsUrn {
 		}
 	}
 
-	// Returns the number of fields in the citation-component of the CtsUrn
+	// Returns the number of fields in the citation-component of a non-range CtsUrn
 	//@returns {Int}
-	citationLevel() {
-		return 0;
+	passageDepth() {
+		if (this.isRange()) {
+			throw new CtsUrnError(`'.passageDepth()' does not work on ranges. Use '.rangeDepth()'. ${this.toString()}`);
+		}
+		let psg = this.passage
+		return psg.split(".").length;
+	}
+
+	// Returns a two-element array of the number of fields in each side of a the citation-component of a range CtsUrn
+	//@returns [{Int}]
+	rangeDepth() {
+		if (!this.isRange()) {
+			throw new CtsUrnError(`'.rangeDepth()' only works on ranges. Use '.passageDepth()'. ${this.toString()}`);
+		}
+		let splitted = this.splitRange();
+		let s = splitted[0].passageDepth();
+		let e = splitted[1].passageDepth();
+		return [s, e];
 	}
 
 	// -----------------------
@@ -312,6 +328,21 @@ class CtsUrn {
 			let urnstr = urnarray.join(":")
 			return new CtsUrn(urnstr);
 		}
+	}
+
+	// Adds a passage-component to a CTS-URN.
+	// If there is already one, replaces it.
+	// @param {String} - psgString
+	addPassage(psgString) {
+		// check validity of psgString up front, so we can get a more precise error message.
+		const psgmatch = psgString.match(/^(([A-Za-z0-9]+)(\.[A-Za-z0-9]+)*(-([A-Za-z0-9]+)(\.[A-Za-z0-9]+)*)?)$/i);
+    if (!psgmatch) {
+      throw new CtsUrnError(`Invalid passage format: "${psgString}"`);
+    }
+
+    let nopass = this.dropPassage();
+    let newUrnStr = nopass.toString() + psgString;
+    return new CtsUrn(newUrnStr);
 	}
 
 	//Reduce the passage-hierarchy of the CtsUrn by one level.

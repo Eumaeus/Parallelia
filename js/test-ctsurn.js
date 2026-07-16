@@ -259,7 +259,7 @@ testMethod(
 
 // -------------------
 // addExemplar()
-//
+// -------------------
 
 var testUrn1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:1.1");
 var testUrn2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.1");
@@ -288,6 +288,131 @@ testMethod(
 	testUrn2.addExemplar("tok").toString() == testUrn1.toString() 
 );
 
+
+// -------------------
+// addPassage()
+// -------------------
+
+var testUrn1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:");
+var testUrn2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.1");
+
+var invalidPass1 = "3-4-5";
+var invalidPass2 = "3:4";
+
+var validPass1 = "3.4.5";
+var validPass2 = "1.definition.3";
+var validPass3 = "1.1-2.2";
+
+// Test valid examples
+testMethod(
+	testUrn1,
+	`this.addPassage(${validPass1}) == ${testUrn1.toString() + validPass1} `,
+	testUrn1.addPassage(validPass1).toString() == `${testUrn1.toString() + validPass1}` 
+);
+
+// Test valid examples
+testMethod(
+	testUrn1,
+	`this.addPassage(${validPass2}) == ${testUrn1.toString() + validPass2} `,
+	testUrn1.addPassage(validPass2).toString() == `${testUrn1.toString() + validPass2}` 
+);
+
+// Test valid examples
+testMethod(
+	testUrn2,
+	`this.addPassage(${validPass2}) == ${testUrn1.toString() + validPass2} `,
+	testUrn2.addPassage(validPass2).toString() == `${testUrn1.toString() + validPass2}` 
+);
+
+// Test passage-string validation
+try {
+	testMethod(
+		testUrn1,
+		`this.addPassage(${invalidPass1})`,
+		testUrn1.addPassage(invalidPass1)
+	);
+} catch(error){
+	targetElement.innerHTML += `<div><p style="color: navy"><code>this.addPassage(${invalidPass1})</code> errored correctly with an invalid passage string: <strong><code>${error}</code></strong></p></div>`;
+}
+
+try {
+	testMethod(
+		testUrn1,
+		`this.addPassage(${invalidPass2})`,
+		testUrn1.addPassage(invalidPass2)
+	);
+} catch(error){
+	targetElement.innerHTML += `<div><p style="color: navy"><code>this.addPassage(${invalidPass2})</code> errored correctly with an invalid passage string: <strong><code>${error}</code></strong></p></div>`;
+}
+
+// -------------------
+// .passageDepth() and .rangeDepth()
+// -------------------
+
+var testUrn1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1");
+var testUrn2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.2");
+var testUrn3 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.2.3");
+
+var testRange1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1-2");
+var testRange2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.2-3.4");
+var testRange3 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1-2.3.4");
+
+testMethod(
+	testUrn1,
+	`this.passageDepth() == 1 `,
+	testUrn1.passageDepth() == 1 
+);
+
+testMethod(
+	testUrn2,
+	`this.passageDepth() == 2 `,
+	testUrn2.passageDepth() == 2 
+);
+
+testMethod(
+	testUrn3,
+	`this.passageDepth() == 3 `,
+	testUrn3.passageDepth() == 3 
+);
+
+testMethod(
+	testRange1,
+	`this.rangeDepth() == [1,1] `,
+	(testRange1.rangeDepth()[0] == 1 && testRange1.rangeDepth()[1] == 1)
+);
+
+testMethod(
+	testRange2,
+	`this.rangeDepth() == [2,2] `,
+	(testRange2.rangeDepth()[0] == 2 && testRange2.rangeDepth()[1] == 2)
+);
+
+testMethod(
+	testRange3,
+	`this.rangeDepth() == [1,3] `,
+	(testRange3.rangeDepth()[0] == 1 && testRange3.rangeDepth()[1] == 3)
+);
+
+
+try {
+	testMethod(
+		testRange1,
+		`this.passageDepth()`,
+		testRange1.passageDepth() == 1
+	);
+} catch(error){
+	targetElement.innerHTML += `<div><p style="color: navy"><code>this.passageDepth()</code> errored correctly trying to deal with a range URN: <strong><code>${error}</code></strong></p></div>`;
+}
+
+try {
+	testMethod(
+		testUrn1,
+		`this.rangeDepth()`,
+		testUrn1.rangeDepth() == 1
+	);
+} catch(error){
+	targetElement.innerHTML += `<div><p style="color: navy"><code>this.rangeDepth()</code> errored correctly trying to deal with a passage URN: <strong><code>${error}</code></strong></p></div>`;
+}
 
 // -------------------
 // equals() and equality
@@ -418,7 +543,7 @@ testMethod(
 
 testMethod(
 	rangeUrn,
-	"splitRange()",
+	"this.splitRange()",
 	((rangeUrn.splitRange()[0].toString() == "urn:cts:greekLit:tlg0012.tlg001.allen:1.1") &&
 	(rangeUrn.splitRange()[1].toString() == "urn:cts:greekLit:tlg0012.tlg001.allen:3.3"))
 );
@@ -426,7 +551,7 @@ testMethod(
 try {
 	testMethod(
 		passageUrn,
-		"splitRange()",
+		"this.splitRange()",
 		((passageUrn.splitRange()[0].toString() == "urn:cts:greekLit:tlg0012.tlg001.allen:1.1") &&
 		(passageUrn.splitRange()[1].toString() == "urn:cts:greekLit:tlg0012.tlg001.allen:3.3"))
 	);
