@@ -144,7 +144,7 @@ class CtsUrn {
 
 	isCongruentWith(other) {
 		// 1.  They have the same namespace. 
-		if (this.nid != other.nid) return false;
+		if (this.nss != other.nss) return false;
 		// 2.  For their work components, each period-separated part that is present in both is equal. If one URN has fewer work parts, it's congruent if its parts match the corresponding initial parts of the other. 
 		let thisBib = this.bibliocomponent;
 		let otherBib = other.bibliocomponent;
@@ -287,14 +287,31 @@ class CtsUrn {
 	// Given an exemplar-level CtsUrn, remove the exemplar-component of the URN, leaving everything else the same.
 	// @returns {CtsUrn}
 	versionFromExemplar() {
-		return null;
+		if (this.isWorkUrn()) {
+	    throw new CtsUrnError(`Must be at least a version-level URN: "${this}"`);
+		} else {
+			let urnarray = ["urn", this.nid, this.nss];	
+			let bib = [this.textgroup, this.workid, this.version].join(".");
+			urnarray.push(bib, this.passage);
+			let urnstr = urnarray.join(":")
+			return new CtsUrn(urnstr);
+		}
 	}
 
 	// Adds the String `exemplarId` to a version-level URN, leaving everything else unchanged.
+	// If there is an existing exemplar id, replaces it.
 	// @param {String} - exemplarId
 	// @returns {CtsUrn}
 	addExemplar(exemplarId) {
-		return null;
+		if (this.isWorkUrn()) {
+	    throw new CtsUrnError(`Must be at least a version-level URN: "${this}"`);
+		} else {
+			let urnarray = ["urn", this.nid, this.nss];	
+			let bib = [this.textgroup, this.workid, this.version, exemplarId].join(".");
+			urnarray.push(bib, this.passage);
+			let urnstr = urnarray.join(":")
+			return new CtsUrn(urnstr);
+		}
 	}
 
 	//Reduce the passage-hierarchy of the CtsUrn by one level.

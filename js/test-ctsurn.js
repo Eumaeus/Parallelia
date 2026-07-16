@@ -236,6 +236,60 @@ testMethod(
 );
 
 // -------------------
+// versionFromExemplar()
+// -------------------
+
+var testUrn1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:1.1");
+var testUrn2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.1");
+
+testMethod(
+	testUrn1,
+	`this.versionFromExemplar() == ${testUrn2.toString()} `,
+	testUrn1.versionFromExemplar().toString() == testUrn2.toString() 
+);
+
+var testUrn1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:");
+var testUrn2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:");
+
+testMethod(
+	testUrn1,
+	`this.versionFromExemplar() == ${testUrn2.toString()} `,
+	testUrn1.versionFromExemplar().toString() == testUrn2.toString() 
+);
+
+// -------------------
+// addExemplar()
+//
+
+var testUrn1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:1.1");
+var testUrn2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.1");
+
+testMethod(
+	testUrn2,
+	`this.versionFromExemplar() == ${testUrn1.toString()} `,
+	testUrn2.addExemplar("tok").toString() == testUrn1.toString() 
+);
+
+var testUrn1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:");
+var testUrn2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:");
+
+testMethod(
+	testUrn2,
+	`this.versionFromExemplar() == ${testUrn1.toString()} `,
+	testUrn2.addExemplar("tok").toString() == testUrn1.toString() 
+);
+
+var testUrn1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:2.2");
+var testUrn2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.dog:2.2");
+
+testMethod(
+	testUrn2,
+	`this.versionFromExemplar() == ${testUrn1.toString()} `,
+	testUrn2.addExemplar("tok").toString() == testUrn1.toString() 
+);
+
+
+// -------------------
 // equals() and equality
 // -------------------
 
