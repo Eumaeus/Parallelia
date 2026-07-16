@@ -137,8 +137,8 @@ class CtsUrn {
 	// 1.  They have the same namespace. 
 	// 2.  For their work components, each period-separated part that is present in both is equal. If one URN has fewer work parts, it's congruent if its parts match the corresponding initial parts of the other. 
 	// 3.  For their passage components (if not ranges), the same logic as for work components applies to their period-separated parts. 
-	// 4.  If both are ranges, their start passage parts must be congruent, and their end passage parts must be congruent. 
-	//5.  They must both be ranges or both not be ranges.
+	// 4.  They must both be ranges or both not be ranges.
+	// 5.  If both are ranges, their start passage parts must be congruent, and their end passage parts must be congruent. 
 	//@param {CtsUrn} - other
 	//@returns {Boolean}
 
@@ -153,16 +153,18 @@ class CtsUrn {
 		let so = otherBib.slice(0, minBib);
 		if (sb.join(".") != so.join(".")) return false;
 
-		// 3.  For their passage components (if not ranges), the same logic as for work components applies to their period-separated parts. 
+		// 4.  They must both be ranges or both not be ranges.
 		if ( this.isRange() != other.isRange() ) return false;
 		if ( !(this.isRange() ) ) {
+			// 3.  For their passage components (if not ranges), the same logic as for work components applies to their period-separated parts. 
 			let thisPass = this.passage.split(".");
 			let otherPass = other.passage.split(".");
 			let minPass = Math.min(thisPass.length, otherPass.length);
 			let tps = thisPass.slice(0, minPass);
 			let ops = otherPass.slice(0, minPass);
 			if (tps.join(".") != ops.join(".")) return false;
-		}  else { // both are ranges
+		} else { 
+			// 5.  If both are ranges, their start passage parts must be congruent, and their end passage parts must be congruent. 
 			let tra = this.splitRange();
 			let ora = other.splitRange();
 			if ( !(tra[0].isCongruentWith(ora[0]) && tra[1].isCongruentWith(ora[1])) ) return false;
