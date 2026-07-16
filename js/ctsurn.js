@@ -47,10 +47,15 @@ class CtsUrn {
     this.nid = match[1].toLowerCase();
     this.nss = match[2];
     this.textgroup = match[3];
-    this.work = match[4];
+    this.workid = match[4];
     this.version = match[6];
     this.exemplar = match[8];
     this.passage = match[9];
+    let biblioarray = [this.textgroup, this.workid];
+    if (this.version) biblioarray.push(this.version);
+    if (this.exemplar) biblioarray.push(this.exemplar);
+    this.bibliocomponent = biblioarray;
+
   }
 
 	// -----------------------
@@ -126,28 +131,44 @@ class CtsUrn {
 		return vu1.equals(vu2);
 	}
 
-	// Takes another CtsUrn and returns "true" if bibliographic hierarchy described by the `this` includes that described by the second. IGNORES PASSAGE COMPONENT.
-	// @param {CtsUrn} other - a CtsUrn at the work-, version- or exemplar-level
-	// @returns {CtsUrn} 
-	biblIncludes(other) {
-		let u1 = this.dropPassage();
-		let u2 = other.dropPassage();
+	// Two CtsUrns are "congruent" if both can be said to identify *the same thing*.
+	// Either of the two might identify *other things as well*.
+	// Two CTS URNs are congruent if: 
+	// 1.  They have the same namespace. 
+	// 2.  For their work components, each period-separated part that is present in both is equal. If one URN has fewer work parts, it's congruent if its parts match the corresponding initial parts of the other. 
+	// 3.  For their passage components (if not ranges), the same logic as for work components applies to their period-separated parts. 
+	// 4.  If both are ranges, their start passage parts must be congruent, and their end passage parts must be congruent. 
+	//5.  They must both be ranges or both not be ranges.
+	//@param {CtsUrn} - other
+	//@returns {Boolean}
 
-		if (u1.equals(u2)) return true;
+	isCongruentWith(other) {
+		// 1.  They have the same namespace. 
+		if (this.nid != other.nid) return false;
+		// 2.  For their work components, each period-separated part that is present in both is equal. If one URN has fewer work parts, it's congruent if its parts match the corresponding initial parts of the other. 
+		let thisBib = this.bibliocomponent;
+		let otherBib = other.bibliocomponent;
+		let minBib = Math.min(thisBib.length, otherBib.length);
+		let sb = thisBib.slice(0, minBib);
+		let so = otherBib.slice(0, minBib);
+		if (sb.join(".") != so.join(".")) return false;
 
-		if (u2.isExemplarUrn() && u1.isVersionUrn()) {
-			if (u1.equals(u2.versionLevelUrn())) return true;
+		// 3.  For their passage components (if not ranges), the same logic as for work components applies to their period-separated parts. 
+		if ( this.isRange() != other.isRange() ) return false;
+		if ( !(this.isRange() ) ) {
+			let thisPass = this.passage.split(".");
+			let otherPass = other.passage.split(".");
+			let minPass = Math.min(thisPass.length, otherPass.length);
+			let tps = thisPass.slice(0, minPass);
+			let ops = otherPass.slice(0, minPass);
+			if (tps.join(".") != ops.join(".")) return false;
+		}  else { // both are ranges
+			let tra = this.splitRange();
+			let ora = other.splitRange();
+			if ( !(tra[0].isCongruentWith(ora[0]) && tra[1].isCongruentWith(ora[1])) ) return false;
 		}
 
-		if (u2.isExemplarUrn() && u1.isWorkUrn()) {
-			if (u1.equals(u2.workLevelUrn())) return true;
-		}
-
-		if (u2.isVersionUrn()) {
-			if (u1.equals(u2.workLevelUrn())) return true;
-		}
-
-		return false;
+		return true;
 	}
 
 	// Takes another CtsUrn and returns "true" if (a) the bibliographic hierarchy of the `this` "includes" that of the second, and (b) the passage-components are equal.
@@ -161,61 +182,6 @@ class CtsUrn {
 		}
 		return false;
 	}
-
-	// A helper-function for passageIncludes(), below. Takes two string-representations of a passage-hierarchy and returns 'true' if the first includes, or "contains" the second
-	// @param {String} s1
-	// @param {String} s2 
-	// @returns {Boolean} 
-	passageStrIncludes(s1, s2) {
-		// get components
-		let cc1 = s1.split(".");
-		let cc2 = s2.split(".");
-
-		// Easy one…
-		if (cc1.length > cc2.length) return false;
-
-		// Get them to the same number of fields
-		cc2 = cc2.slice(0, cc1.length);
-
-		if (cc1.toString() == cc2.toString()) return true;
-
-		return false;
-	}
-
-	// Looks ONLY at the passage-components of two URNs. Returns true if the hierarchy expressed by the first contains that of the second. Does some careful consideration of ranges.
-	// @param {CtsUrn} other
-	// @returns {Boolean} 
-	passageIncludes(other) {
-		p1 = getPassage(this);
-		p2 = getPassage(other);
-		// easy one…
-		if (p1 == p2) return true;
-
-		// non-ranges
-
-		// A point cannot contain a range
-
-		if (!p1.isRange() && p2.isRange()) return false;
-
-		// A range can contain a point
-
-		return false;
-	}
-
-	// Looks at the passage-components of two URNs, `this` and `other`. Returns true if the hierarchy expressed by the first contains that of the second. Does some careful consideration of ranges. Returns false if the bibliographic hierarchy of the first does not "include" that of the second
-	// @param {CtsUrn} urn2 - a CtsUrn 
-	// @returns {Boolean} 
-	textIncludes(urn2) {
-		return false;
-	}
-
-	//Shorthand function. Ignoring citation-components, are the URNs' bibliography-components equal.
-	//@param {CtsUrn} - other
-	//@returns {Boolean}
-	sameText(other) {
-		return false;
-	}
-
 
 	// ---------------------
 	// --- URN Retrieval ---
